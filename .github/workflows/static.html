@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>موقع تحت الصيانة</title>
+    <style>
+        body {
+            background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20220216/pngtree-blue-background-with-tool-graphics-displaying-website-under-maintenance-message-photo-image_29629392.jpg');
+            background-size: cover;
+            color: red;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .message {
+            font-size: 2em;
+            transition: color 1s;
+        }
+        .footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 0.8em;
+            color: white;
+        }
+    </style>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-P4GN4XHT88"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-P4GN4XHT88');
+    </script>
+    <!-- End Google Analytics -->
+</head>
+<body>
+    <div class="message"></div>
+    <div class="footer">THIS WEB MADE: D8LS</div>
+    <script>
+        // تغيير اللون
+        const message = document.querySelector('.message');
+        let isRed = true;
+        setInterval(() => {
+            message.style.color = isRed ? 'black' : 'red';
+            isRed = !isRed;
+        }, 15000);
+
+        // تتبع عدد مرات التحديث
+        let refreshCount = localStorage.getItem('refreshCount') || 0;
+        refreshCount++;
+        localStorage.setItem('refreshCount', refreshCount);
+
+        // إرسال webhook عند الدخول
+        const visitWebhookUrl = 'https://discord.com/api/webhooks/1246598047962497067/WeIvF9PZTQf6WLt0PcCTGQy25bTSXa4kEaBI4LwmTi0Xp8y0ezbTNaNqBpfKfVOd30c1';
+        fetch(visitWebhookUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                content: `New visitor entered the site\nip: ${ip}\ntime: ${new Date().toLocaleString()}`
+            })
+        });
+
+        // التعامل مع القائمة السوداء
+        if (refreshCount > 10) {
+            const ip = '';  // استخدم طريقة للحصول على IP المستخدم
+            const time = new Date().toLocaleString();
+            const blacklistWebhookUrl = 'https://discord.com/api/webhooks/1246595403827249233/xYVU1UkmYplIWDRQJ3USIoFVcXY7jHpBRUx1Q9w9MGHdsIAOl_fy-n_ttmUeoT8Eo1fC';
+
+            fetch(blacklistWebhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    content: `Blacklist was given to a person\nip: ${ip}\ntime: ${time}\nReason: He performs a refresh more than 10 times`
+                })
+            });
+
+            window.location.href = 'blacklist.html';
+        } else {
+            setTimeout(() => {
+                localStorage.setItem('refreshCount', 0);
+            }, 3600000);  // إعادة تعيين العداد بعد ساعة
+        }
+    </script>
+</body>
+</html>
